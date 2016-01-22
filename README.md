@@ -1,5 +1,5 @@
 # arXiv paper search
-search recent arXiv papers using keywords [Link](http://www.markdanovich.com/arxivsearch.html)
+search recent arXiv papers using keywords - [link](http://www.markdanovich.com/arxivsearch.html)
 
 * The webapp uses the arXiv API to search for recent arXiv papers with specified keywords in the title or abstract.
 * The papers are listed in chronological order showing the title, authors, abstract, and date. A link is provided to the paper.
