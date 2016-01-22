@@ -1,4 +1,4 @@
-# arxivsearch
+# arXiv paper search
 search recent arXiv papers using keywords
 
 * The webapp uses the arXiv API to search for recent arXiv papers with specified keywords in the title or abstract.
