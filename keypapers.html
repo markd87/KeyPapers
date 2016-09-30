@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>KeyPapers</title>
-    <meta name="description" content="Search recent papers on arXiv and APS journals by keywords">
+    <meta name="description" content="Search recent papers on arXiv, APS journals and Nature journals by keywords">
     <!-- Bootstrap -->
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
@@ -81,31 +81,10 @@
     <input type="checkbox" autocomplete="off" class="journals" checked name="journal" value="arxiv">arXiv
   </label>
   <label class="btn btn-primary">
-    <input type="checkbox" autocomplete="off" class="journals" name="journal" value="prb">PRB
+    <input type="checkbox" autocomplete="off" class="journals" name="journal" value="aps">APS Jouranls
   </label>
-  <label class="btn btn-primary">
-    <input type="checkbox" autocomplete="off" class="journals" name="journal" value="prl">PRL
-  </label>
-  <label class="btn btn-primary">
-    <input type="checkbox" autocomplete="off" class="journals" name="journal" value="pra">PRA
-  </label>
-    <label class="btn btn-primary">
-    <input type="checkbox" autocomplete="off" class="journals" name="journal" value="prc">PRC
-  </label>
-    <label class="btn btn-primary">
-    <input type="checkbox" autocomplete="off" class="journals" name="journal" value="prd">PRD
-  </label>  
-    <label class="btn btn-primary">
-    <input type="checkbox" autocomplete="off" class="journals" name="journal" value="pre">PRE
-  </label>
-    <label class="btn btn-primary">
-    <input type="checkbox" autocomplete="off" class="journals" name="journal" value="prx">PRX
-  </label>
-    <label class="btn btn-primary">
-    <input type="checkbox" autocomplete="off" class="journals" name="journal" value="rmp">RMP
-  </label>
-    <label class="btn btn-primary">
-    <input type="checkbox" autocomplete="off" class="journals" name="journal" value="prapplied">PRApplied
+      <label class="btn btn-primary">
+    <input type="checkbox" autocomplete="off" class="journals" name="journal" value="nature">Nature Journals
   </label>
 </div>
 <br/>
@@ -152,7 +131,7 @@
           }).get();
           var tags="";
           $("span.tagit-label").each(function(i) {
-            tags=tags+$(this).html()+" ,";
+            tags=tags+$(this).html()+",";
           });
           $.ajax({
             method: "POST",

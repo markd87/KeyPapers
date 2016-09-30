@@ -10,10 +10,10 @@ include('simple_html_dom.php');
 
 $articles=array();
 
-function aps($keys,$orand,$jour){
+function aps($keys,$orand,$url,$jour){
     global $articles;
     $type=strtoupper($jour);
-    $myXMLData=file_get_contents("http://feeds.aps.org/rss/recent/".$jour.".xml");
+    $myXMLData=file_get_contents($url);
     $myXMLData = preg_replace('~(</?|\s)([a-z0-9_]+):~is', '$1$2_', $myXMLData);
     $xml=simplexml_load_string($myXMLData);
     foreach($xml->item as $i){
@@ -38,8 +38,9 @@ function aps($keys,$orand,$jour){
                     break;
                 }
             } else {
-                if ((strpos(strtolower($article["title"]), strtolower($key)) !== false) and (strpos(strtolower($article["abstract"]), strtolower($key)) !== false) and (strpos(strtolower($article["authors"]), strtolower($key)) !== false)) {
-                    $bool=1;
+                $bool=1;
+                if ((strpos(strtolower($article["title"]), strtolower($key)) !== true) and (strpos(strtolower($article["abstract"]), strtolower($key)) !== true) and (strpos(strtolower($article["authors"]), strtolower($key)) !== true)) {
+                    $bool=0;
                     break;
                 }                
             }
@@ -61,29 +62,8 @@ function DescSort($item1,$item2)
     return ($item1['date'] < $item2['date']) ? 1 : -1;
 }
 
-function output(){
-    global $articles;
-    $return="";
-    usort($articles,'DescSort');
-
-    foreach($articles as $article){
-        $item='<div class="list-group">
-                <div>
-                    <h3 style="text-align: center;margin-top: -22px;height: 20px;line-height: 20px;font-size: 15px;"><span style="background-color:aliceblue; padding:5px;">'.$article["type"].'</span></h3>
-                    <h6 style="float:right; margin-top:0px;">'.$article["date"].'</h6>
-                    <h4 class="list-group-item-heading" style="width:87%;"><a href="'.$article["link"].'" target="_blank">'.$article["title"].'</a>
-                     <a href="'.$article["pdf"].'" target="_blank">[PDF]</a></h4>
-                    <h5>'.$article["authors"].'</h6>
-                    <p class="list-group-item-text">'.$article["abstract"].'</p>
-                </div>
-               </div>';
-        $return = $return.$item;
-    }
-    echo $return;
-}
 
 function arxiv($arr,$orand){
-
     global $articles;
     $size=sizeof($arr);
     $i=0;
@@ -127,8 +107,8 @@ function arxiv($arr,$orand){
         $article=array();
         $article["type"]="arXiv";
         $article["link"]=$entry->id;
-        $start = strpos($link,'abs');
-        $linkpdf = substr_replace($link, 'pdf', $start, 3);
+        $start = strpos($article["link"],'abs');
+        $linkpdf = substr_replace($article["link"], 'pdf', $start, 3);
         $article["pdf"]= $linkpdf.'.pdf';
         $article["title"]=$entry->title;
         $date = $entry->published;
@@ -173,6 +153,68 @@ function arxiv($arr,$orand){
 }
 
 
+function nature($keys,$orand,$url,$jour){
+    global $articles;
+    $myXMLData=file_get_contents($url);
+    $xml=simplexml_load_string($myXMLData);
+    //$html=file_get_html("http://feeds.feedburner.com/nature/qBBA?format=xml");
+    foreach($xml->item as $i){
+        $article=array();
+         $article["type"]=$jour;
+        $article["link"]=$i->link;
+        $article['title']= $i->title;
+        $article['abstract']= $i->description;
+        $article["link"]=$i->link;
+        $article['pdf'] = "";
+        $article['authors'] = "";
+        $article['date'] = "";
+        $bool=0;
+        foreach($keys as $key){
+            if ($orand==0){
+                if ((strpos(strtolower($article["title"]), strtolower($key)) !== false) or (strpos(strtolower($article["abstract"]), strtolower($key)) !== false) or (strpos(strtolower($article["authors"]), strtolower($key)) !== false)) {
+                    $bool=1;
+                    break;
+                }
+            } else {
+                $bool=1;
+                if ((strpos(strtolower($article["title"]), strtolower($key)) !== true) and (strpos(strtolower($article["abstract"]), strtolower($key)) !== true) and (strpos(strtolower($article["authors"]), strtolower($key)) !== true)) {
+                    $bool=0;
+                    break;
+                }                
+            }
+        }
+
+        if ($bool==1){
+            array_push($articles,$article);
+        }
+
+    }
+}
+
+
+
+function output(){
+    global $articles;
+    $return="";
+    usort($articles,'DescSort');
+
+    foreach($articles as $article){
+        $item='<div class="list-group">
+                <div>
+                    <h3 style="text-align: center;margin-top: -22px;height: 20px;line-height: 20px;font-size: 15px;"><span style="background-color:aliceblue; padding:5px;">'.$article["type"].'</span></h3>
+                    <h6 style="float:right; margin-top:0px;">'.$article["date"].'</h6>
+                    <h4 class="list-group-item-heading" style="width:87%;"><a href="'.$article["link"].'" target="_blank">'.$article["title"].'</a>
+                     <a href="'.$article["pdf"].'" target="_blank">[PDF]</a></h4>
+                    <h5>'.$article["authors"].'</h6>
+                    <p class="list-group-item-text">'.$article["abstract"].'</p>
+                </div>
+               </div>';
+        $return = $return.$item;
+    }
+    echo $return;
+}
+
+
 #get keywords string from the search
 $keys=$_POST["keys"];
 
@@ -190,8 +232,27 @@ foreach ($journals as $jour){
         case "arxiv":
             arxiv($arr,$orand);
             break;
-        default:
-            aps($arr,$orand,$jour);
+        case "nature":
+            nature($arr,$orand,"http://feeds.nature.com/nphys/rss/current?format=xml","Nature Physics");
+            nature($arr,$orand,"http://feeds.nature.com/nphys/rss/aop?format=xml","Nature Physics");
+            nature($arr,$orand,"http://feeds.nature.com/nmat/rss/current?format=xml","Nature Materials");
+            nature($arr,$orand,"http://feeds.nature.com/nmat/rss/aop?format=xml","Nature Materials");
+            nature($arr,$orand,"http://feeds.nature.com/nature/rss/current?format=xml","Nature");
+            nature($arr,$orand,"http://feeds.nature.com/nature/rss/aop?format=xml","Nature");
+            nature($arr,$orand,"http://feeds.nature.com/nphoton/rss/current?format=xml","Nature Photonics");
+            nature($arr,$orand,"http://feeds.nature.com/nphoton/rss/aop?format=xml","Nature Photonics");
+            nature($arr,$orand,"http://feeds.nature.com/nnano/rss/current?format=xml","Nature Nanotechnology");
+            break;
+        case "aps":
+            aps($arr,$orand,"http://feeds.aps.org/rss/recent/prb.xml","prb");
+            aps($arr,$orand,"http://feeds.aps.org/rss/recent/prl.xml","prl");
+            aps($arr,$orand,"http://feeds.aps.org/rss/recent/pra.xml","pra");
+            aps($arr,$orand,"http://feeds.aps.org/rss/recent/prc.xml","prc");
+            aps($arr,$orand,"http://feeds.aps.org/rss/recent/prd.xml","prd");
+            aps($arr,$orand,"http://feeds.aps.org/rss/recent/pre.xml","pre");
+            aps($arr,$orand,"http://feeds.aps.org/rss/recent/prx.xml","prx");
+            aps($arr,$orand,"http://feeds.aps.org/rss/recent/rmp.xml","rmp");
+            aps($arr,$orand,"http://feeds.aps.org/rss/recent/prapllied.xml","prapplied");
     }
 }
 
