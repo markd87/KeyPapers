@@ -31,18 +31,62 @@ function aps($keys,$orand,$url,$jour){
         $article["type"]=$type;
 
         $bool=0;
-        foreach($keys as $key){
-            if ($orand==0){
+        if ($orand==0){
+            foreach($keys as $key){
                 if ((strpos(strtolower($article["title"]), strtolower($key)) !== false) or (strpos(strtolower($article["abstract"]), strtolower($key)) !== false) or (strpos(strtolower($article["authors"]), strtolower($key)) !== false)) {
                     $bool=1;
                     break;
                 }
-            } else {
-                $bool=1;
-                if ((strpos(strtolower($article["title"]), strtolower($key)) !== true) and (strpos(strtolower($article["abstract"]), strtolower($key)) !== true) and (strpos(strtolower($article["authors"]), strtolower($key)) !== true)) {
-                    $bool=0;
+            }
+        } else {
+            foreach($keys as $key){
+                if ((strpos(strtolower($article["title"]), strtolower($key)) !== false) or (strpos(strtolower($article["abstract"]), strtolower($key)) !== false) or (strpos(strtolower($article["authors"]), strtolower($key)) !== false)) {
+                    $bool=1;
+                }else{
+                    $bool=0; break;
+                }               
+            }
+        }
+
+        if ($bool==1){
+            array_push($articles,$article);
+        }
+    }
+}
+
+
+function science($keys,$orand,$url,$jour){
+    global $articles;
+    $type=strtoupper($jour);
+    $myXMLData=file_get_contents($url);
+    $myXMLData = preg_replace('~(</?|\s)([a-z0-9_]+):~is', '$1$2_', $myXMLData);
+    $xml=simplexml_load_string($myXMLData);
+    foreach($xml->item as $i){
+        $article=array();
+        $article["title"]=$i->title;
+        $article["link"]=$i->link;
+        $article["pdf"]=str_replace("?rss=1",".full.pdf",$article["link"]);
+        $article["abstract"]=$i->description;
+        $article["authors"]=$i->dc_creator;
+        $date=explode("T",$i->dc_date);
+        $article["date"]=$date[0]; //date
+        $article["type"]=$type;
+
+        $bool=0;
+        if ($orand==0){
+            foreach($keys as $key){
+                if ((strpos(strtolower($article["title"]), strtolower($key)) !== false) or (strpos(strtolower($article["abstract"]), strtolower($key)) !== false) or (strpos(strtolower($article["authors"]), strtolower($key)) !== false)) {
+                    $bool=1;
                     break;
-                }                
+                }
+            }
+        } else {
+            foreach($keys as $key){
+                if ((strpos(strtolower($article["title"]), strtolower($key)) !== false) or (strpos(strtolower($article["abstract"]), strtolower($key)) !== false) or (strpos(strtolower($article["authors"]), strtolower($key)) !== false)) {
+                    $bool=1;
+                }else{
+                    $bool=0; break;
+                }               
             }
         }
 
@@ -72,19 +116,23 @@ function acs($keys,$orand,$url,$jour){
         $article["date"]=$date[0]; //date
         $article["type"]=$type;
 
+        //$html=html_get_contents($article["link"]);
+        //$article["abstract"]=$html->find("div[id=abstractbox]",0)->plaintext;
         $bool=0;
-        foreach($keys as $key){
-            if ($orand==0){
+        if ($orand==0){
+            foreach($keys as $key){
                 if ((strpos(strtolower($article["title"]), strtolower($key)) !== false) or (strpos(strtolower($article["abstract"]), strtolower($key)) !== false) or (strpos(strtolower($article["authors"]), strtolower($key)) !== false)) {
                     $bool=1;
                     break;
                 }
-            } else {
-                $bool=1;
-                if ((strpos(strtolower($article["title"]), strtolower($key)) !== true) and (strpos(strtolower($article["abstract"]), strtolower($key)) !== true) and (strpos(strtolower($article["authors"]), strtolower($key)) !== true)) {
-                    $bool=0;
-                    break;
-                }                
+            }
+        } else {
+            foreach($keys as $key){
+                if ((strpos(strtolower($article["title"]), strtolower($key)) !== false) or (strpos(strtolower($article["abstract"]), strtolower($key)) !== false) or (strpos(strtolower($article["authors"]), strtolower($key)) !== false)) {
+                    $bool=1;
+                }else{
+                    $bool=0; break;
+                }               
             }
         }
 
@@ -207,18 +255,20 @@ function nature($keys,$orand,$url,$jour){
         $article['authors'] = "";
         $article['date'] = "";
         $bool=0;
-        foreach($keys as $key){
-            if ($orand==0){
+        if ($orand==0){
+            foreach($keys as $key){
                 if ((strpos(strtolower($article["title"]), strtolower($key)) !== false) or (strpos(strtolower($article["abstract"]), strtolower($key)) !== false) or (strpos(strtolower($article["authors"]), strtolower($key)) !== false)) {
                     $bool=1;
                     break;
                 }
-            } else {
-                $bool=1;
-                if ((strpos(strtolower($article["title"]), strtolower($key)) !== true) and (strpos(strtolower($article["abstract"]), strtolower($key)) !== true) and (strpos(strtolower($article["authors"]), strtolower($key)) !== true)) {
-                    $bool=0;
-                    break;
-                }                
+            }
+        } else {
+            foreach($keys as $key){
+                if ((strpos(strtolower($article["title"]), strtolower($key)) !== false) or (strpos(strtolower($article["abstract"]), strtolower($key)) !== false) or (strpos(strtolower($article["authors"]), strtolower($key)) !== false)) {
+                    $bool=1;
+                }else{
+                    $bool=0; break;
+                }               
             }
         }
 
@@ -292,9 +342,15 @@ foreach ($journals as $jour){
             aps($arr,$orand,"http://feeds.aps.org/rss/recent/prx.xml","prx");
             aps($arr,$orand,"http://feeds.aps.org/rss/recent/rmp.xml","rmp");
             aps($arr,$orand,"http://feeds.aps.org/rss/recent/prapllied.xml","prapplied");
+            break;
         case "acs":
             acs($arr,$orand,"http://feeds.feedburner.com/acs/ancac3?format=xml","acs");
             acs($arr,$orand,"http://feeds.feedburner.com/acs/nalefd?format=xml","acs");
+            acs($arr,$orand,"http://feeds.feedburner.com/acs/aamick?format=xml","acs");
+            break;
+        case "science":
+            science($arr,$orand,"http://science.sciencemag.org/rss/current.xml","science");
+            break;
     }
 }
 

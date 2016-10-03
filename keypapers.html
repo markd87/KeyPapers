@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>KeyPapers</title>
-    <meta name="description" content="Search recent papers on arXiv, APS journals and Nature journals by keywords">
+    <meta name="description" content="Search recent papers on arXiv, APS journals, ACS journals, Nature journals and Science journal by keywords">
     <!-- Bootstrap -->
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
@@ -69,7 +69,7 @@
 <!--    home -->
     <div class="container main">
       <h1>KeyPapers</h1>
-      <p class="lead bannerText">Search recent papers on arXiv, APS journals, ACS journals and Nature journals by keywords in the title and abstracts</p>
+      <p class="lead bannerText">Search recent papers on arXiv, APS journals, ACS journals, Nature journals and Science journal by keywords in the title and abstracts</p>
       <p class='by'>by <a href="http://www.markdanovich.com" target="_blank">Mark Danovich</a>, on <a target='_blank' href='https://github.com/markd87/arxivsearch'>GitHub</a></p>
 <button type="button" class='btn btn-success btn-lg' name="submit" id="submit">search</button>
       <form role="form">
@@ -80,14 +80,17 @@
   <label class="btn btn-primary active">
     <input type="checkbox" autocomplete="off" class="journals" checked name="journal" value="arxiv">arXiv
   </label>
-  <label class="btn btn-primary">
-    <input type="checkbox" autocomplete="off" class="journals" name="journal" value="aps">APS Journals
+  <label class="btn btn-primary active">
+    <input type="checkbox" autocomplete="off" class="journals" checked name="journal" value="aps">APS Journals
   </label>
-  <label class="btn btn-primary">
-    <input type="checkbox" autocomplete="off" class="journals" name="journal" value="nature">Nature Journals
+  <label class="btn btn-primary active">
+    <input type="checkbox" autocomplete="off" class="journals" checked name="journal" value="nature">Nature Journals
   </label>
-  <label class="btn btn-primary">
-    <input type="checkbox" autocomplete="off" class="journals" name="journal" value="acs">ACS Journals
+  <label class="btn btn-primary active">
+    <input type="checkbox" autocomplete="off" class="journals" checked name="journal" value="acs">ACS Journals
+  </label>
+  <label class="btn btn-primary active">
+    <input type="checkbox" autocomplete="off" class="journals" checked name="journal" value="science">Science
   </label>
 </div>
 <br/>
@@ -136,6 +139,7 @@
           $("span.tagit-label").each(function(i) {
             tags=tags+$(this).html()+",";
           });
+          tags = tags.slice(0, -1);
           $.ajax({
             method: "POST",
             url: "prb.php",
