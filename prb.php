@@ -155,28 +155,30 @@ function arxiv($arr,$orand){
     $i=0;
     $query="";
 
+//print_r($arr);
+//echo $size;
     #prepare query
-    if ($orand==0){
-    foreach ($arr as $el){
-        $i=$i+1;
-        if ($el!="") {
-            $query = $query.$el;
-        }
-        if ($i<=$size-2) {
-              $query=$query."+OR+";
-        }
+if ($orand==0){
+foreach ($arr as $el){
+    $i=$i+1;
+    if ($i<$size) {
+        $query = $query.$el."+OR+";
+    } else {
+          $query=$query.$el;
     }
-    }else{
-    foreach ($arr as $el){
-        $i=$i+1;
-        if ($el!="") {
-            $query = $query.$el;
-        }
-        if ($i<=$size-2) {
-              $query=$query."+AND+";
-        }
+}
+}else{
+foreach ($arr as $el){
+    $i=$i+1;
+    if ($i<$size) {
+$query = $query.$el."+AND+";
+    } else {
+          $query=$query.$el;
     }
-    }
+}
+}
+
+//echo $query;
 
     #number of returned papers is limited to 20
     $limit=30;
@@ -206,8 +208,8 @@ function arxiv($arr,$orand){
         }
         $article["authors"] = substr($authors,0,strlen($authors)-2);
 
-        $newtitle=$article["title"];
-        $newabstract=$article["abstract"];
+        #$newtitle=$article["title"];
+        #$newabstract=$article["abstract"];
         #mark the keywords in the title/abstract with a yellow background
         /*foreach ($arr as $el){
             $rep = "<span style='background-color:yellow;'>".$el."</span> ";
