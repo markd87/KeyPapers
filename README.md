@@ -1,5 +1,5 @@
 # KeyPapers search
-search recent arXiv and APS journals papers using keywords - [link](http://www.markdanovich.com/keypapers.html)
+search recent arXiv and APS journals papers using keywords - [link](http://oscar.hostingmyself.com)
 
 * checkbox buttons allow to choose any of the APS journals and the arXiv.
 * The webapp uses the arXiv API to search for recent arXiv papers with specified keywords in the title or abstract.
